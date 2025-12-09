@@ -25,13 +25,15 @@ class AppConstants {
     'Mustard',
     'Sugarcane',
     'Potato',
+    'rice',
+    'Millet'
   ];
   
   // Seasons
   static const List<String> seasons = ['Rabi', 'Kharif', 'Zaid'];
   
   // Soil types
-  static const List<String> soilTypes = ['Light', 'Medium', 'Heavy'];
+  static const List<String> soilTypes = ['Sandy', 'Loam', 'Clay', 'Medium'];
   
   // Indian states
   static const List<String> indianStates = [

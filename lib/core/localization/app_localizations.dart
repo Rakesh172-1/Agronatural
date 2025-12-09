@@ -50,6 +50,14 @@ class AppLocalizations {
   String get fertilizerGuide => translate('fertilizerGuide');
   String get governmentSchemes => translate('governmentSchemes');
   String get viewSchemes => translate('viewSchemes');
+  String get blog => translate('blog');
+  String get blogDescription => translate('blogDescription');
+  String get farmCalculator => translate('farmCalculator');
+  String get calculateFarmMetrics => translate('calculateFarmMetrics');
+  String get loanSchemes => translate('loanSchemes');
+  String get loanSchemesDescription => translate('loanSchemesDescription');
+  String get diseaseDetector => translate('diseaseDetector');
+  String get diseaseDetectorDescription => translate('diseaseDetectorDescription');
   String get selectState => translate('selectState');
   String get selectDistrict => translate('selectDistrict');
   String get selectCrop => translate('selectCrop');

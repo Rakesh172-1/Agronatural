@@ -11,6 +11,12 @@ import 'package:vriddhiapps/features/crop_planner/presentation/screens/crop_plan
 import 'package:vriddhiapps/features/mandi_price/presentation/screens/mandi_price_screen.dart';
 import 'package:vriddhiapps/features/fertilizer/presentation/screens/fertilizer_screen.dart';
 import 'package:vriddhiapps/features/government_schemes/presentation/screens/government_schemes_screen.dart';
+import 'package:vriddhiapps/features/blog/presentation/screens/blog_screen.dart';
+import 'package:vriddhiapps/features/farm_calculator/presentation/screens/calculator_screen.dart';
+import 'package:vriddhiapps/features/loan_schemes/presentation/screens/loan_schemes_screen.dart';
+import 'package:vriddhiapps/features/disease_detector/presentation/screens/disease_detector_screen.dart';
+import 'package:vriddhiapps/features/auth/presentation/screens/sign_in_screen.dart';
+import 'package:vriddhiapps/features/auth/presentation/screens/sign_up_screen.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
@@ -31,8 +37,20 @@ class MyApp extends StatelessWidget {
 
   GoRouter _buildRouter() {
     return GoRouter(
-      initialLocation: '/',
+      initialLocation: '/sign-in',
       routes: [
+        // Auth routes (no ShellRoute) - Always show first
+        GoRoute(
+          path: '/sign-in',
+          name: 'sign-in',
+          builder: (context, state) => const SignInScreen(),
+        ),
+        GoRoute(
+          path: '/sign-up',
+          name: 'sign-up',
+          builder: (context, state) => const SignUpScreen(),
+        ),
+        // Main app routes with ShellRoute
         ShellRoute(
           builder: (context, state, child) => AppShell(child: child),
           routes: [
@@ -66,6 +84,26 @@ class MyApp extends StatelessWidget {
               name: 'government-schemes',
               builder: (context, state) => const GovernmentSchemesScreen(),
             ),
+            GoRoute(
+              path: '/blog',
+              name: 'blog',
+              builder: (context, state) => const BlogScreen(),
+            ),
+            GoRoute(
+              path: '/calculator',
+              name: 'calculator',
+              builder: (context, state) => const FarmCalculatorScreen(),
+            ),
+            GoRoute(
+              path: '/loan-schemes',
+              name: 'loan-schemes',
+              builder: (context, state) => const LoanSchemesScreen(),
+            ),
+            GoRoute(
+              path: '/disease-detector',
+              name: 'disease-detector',
+              builder: (context, state) => const DiseaseDetectorScreen(),
+            ),
           ],
         ),
       ],
@@ -75,13 +113,10 @@ class MyApp extends StatelessWidget {
 
 class AppShell extends ConsumerStatefulWidget {
   final Widget child;
-
   const AppShell({required this.child, super.key});
-
   @override
   ConsumerState<AppShell> createState() => _AppShellState();
 }
-
 class _AppShellState extends ConsumerState<AppShell> {
   int _selectedIndex = 0;
 

@@ -174,14 +174,43 @@ class HomeScreen extends ConsumerWidget {
         route: '/government-schemes',
         description: localization.viewSchemes
       ),
+      (
+        title: localization.blog,
+        icon: Icons.newspaper,
+        color: Color(0xFF66BB6A),
+        route: '/blog',
+        description: localization.blogDescription
+      ),
+      (
+        title: localization.farmCalculator,
+        icon: Icons.calculate,
+        color: Color(0xFF78909C),
+        route: '/calculator',
+        description: localization.calculateFarmMetrics
+      ),
+      (
+        title: localization.loanSchemes,
+        icon: Icons.account_balance,
+        color: Color(0xFF8D6E63),
+        route: '/loan-schemes',
+        description: localization.loanSchemesDescription
+      ),
+      (
+        title: localization.diseaseDetector,
+        icon: Icons.bug_report,
+        color: Color(0xFFEF5350),
+        route: '/disease-detector',
+        description: localization.diseaseDetectorDescription
+      ),
     ];
 
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 12,
+      childAspectRatio: 0.85,
       children: features.map((feature) {
         return _buildFeatureCard(
           context,
@@ -229,21 +258,23 @@ class HomeScreen extends ConsumerWidget {
                 color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(8),
               child: Icon(
                 icon,
-                size: 40,
+                size: 32,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             Text(
               description,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.87),
+                color: const Color.fromARGB(97, 66, 53, 53),
                 fontWeight: FontWeight.bold,
+                fontSize: 11,
               ),
+
             ),
           ],
         ),
