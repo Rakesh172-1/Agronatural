@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vriddhiapps/features/loan_schemes/presentation/providers/loan_schemes_provider.dart';
-import 'package:vriddhiapps/common_widgets/universal_language_button.dart';
 
 class LoanSchemesScreen extends ConsumerStatefulWidget {
   const LoanSchemesScreen({super.key});
@@ -28,7 +27,6 @@ class _LoanSchemesScreenState extends ConsumerState<LoanSchemesScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Loan Schemes for Farmers'),
-        actions: const [UniversalLanguageButton()],
         elevation: 0,
       ),
       body: Column(

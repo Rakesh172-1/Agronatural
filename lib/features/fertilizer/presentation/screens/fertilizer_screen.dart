@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vriddhiapps/core/constants/app_constants.dart';
 import 'package:vriddhiapps/features/fertilizer/presentation/providers/fertilizer_provider.dart';
-import 'package:vriddhiapps/common_widgets/universal_language_button.dart';
 
 class FertilizerScreen extends ConsumerWidget {
   const FertilizerScreen({super.key});
@@ -17,9 +16,6 @@ class FertilizerScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Fertilizer Guide'),
-        actions: [
-          const UniversalLanguageButton(),
-        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

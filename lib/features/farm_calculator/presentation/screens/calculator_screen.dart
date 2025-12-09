@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vriddhiapps/features/farm_calculator/presentation/providers/calculator_provider.dart';
-import 'package:vriddhiapps/common_widgets/universal_language_button.dart';
 
 class FarmCalculatorScreen extends ConsumerStatefulWidget {
   const FarmCalculatorScreen({super.key});
@@ -31,7 +30,6 @@ class _FarmCalculatorScreenState extends ConsumerState<FarmCalculatorScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Farm Calculator'),
-        actions: const [UniversalLanguageButton()],
         bottom: TabBar(
           controller: _tabController,
           tabs: const [

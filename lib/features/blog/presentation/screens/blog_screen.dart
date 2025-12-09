@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:vriddhiapps/features/blog/presentation/providers/blog_provider.dart';
-import 'package:vriddhiapps/common_widgets/universal_language_button.dart';
 
 class BlogScreen extends ConsumerStatefulWidget {
   const BlogScreen({super.key});
@@ -27,7 +26,6 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Blog'),
-        actions: const [UniversalLanguageButton()],
       ),
       body: blogState.when(
         loading: () => const Center(child: CircularProgressIndicator()),

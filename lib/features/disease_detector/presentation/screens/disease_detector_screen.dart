@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vriddhiapps/features/disease_detector/presentation/providers/disease_detector_provider.dart';
-import 'package:vriddhiapps/common_widgets/universal_language_button.dart';
 
 class DiseaseDetectorScreen extends ConsumerStatefulWidget {
   const DiseaseDetectorScreen({super.key});
@@ -38,7 +37,6 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
     return Scaffold(
       appBar: AppBar(
         title: const Text('Disease Detector'),
-        actions: const [UniversalLanguageButton()],
         bottom: TabBar(controller: _tabController, tabs: const [Tab(text: 'Browse'), Tab(text: 'Detect'), Tab(text: 'Search')]),
       ),
       body: TabBarView(controller: _tabController, children: [_buildBrowseTab(), _buildDetectTab(), _buildSearchTab()]),
