@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 import 'package:vriddhiapps/core/constants/app_constants.dart';
 import 'package:vriddhiapps/features/mandi_price/presentation/providers/mandi_price_provider.dart';
 
@@ -14,8 +15,10 @@ class MandiPriceScreen extends ConsumerWidget {
     final selectedCrop = ref.watch(selectedMandiCropProvider);
     final districtState = ref.watch(availableDistrictsProvider);
     final priceState = ref.watch(mandiPriceNotifierProvider);
+    final localizationAsync = ref.watch(appLocalizationProvider);
 
-    return SingleChildScrollView(
+    return localizationAsync.when(
+      data: (localization) => SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -23,14 +26,14 @@ class MandiPriceScreen extends ConsumerWidget {
           children: [
             // Header
             Text(
-              'मंडी भाव',
+              localization.translate('mandiPrices'),
               style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.green[800],
                   ),
             ),
             Text(
-              'बाजार के भाव की जानकारी',
+              localization.translate('checkMarketPrices'),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.grey[600],
                   ),
@@ -127,7 +130,7 @@ class MandiPriceScreen extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(32.0),
                       child: Text(
-                        'भाव जानने के लिए फसल चुनें',
+                        localization.translate('selectCrop'),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Colors.grey[600],
                             ),
@@ -141,7 +144,7 @@ class MandiPriceScreen extends ConsumerWidget {
                   children: [
                     // Chart
                     Text(
-                      '7 दिन की कीमत प्रवृत्ति',
+                      localization.translate('forecast'),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.green[800],
@@ -162,7 +165,7 @@ class MandiPriceScreen extends ConsumerWidget {
 
                     // Mandis list
                     Text(
-                      'मंडी के भाव',
+                      localization.translate('mandiPrices'),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.green[800],
@@ -185,6 +188,9 @@ class MandiPriceScreen extends ConsumerWidget {
           ],
         ),
       ),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, s) => const Center(child: Text('Error')),
     );
   }
 

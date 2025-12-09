@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:vriddhiapps/core/theme/app_theme.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
+import 'package:vriddhiapps/common_widgets/universal_language_button.dart';
 import 'package:vriddhiapps/features/home/presentation/screens/home_screen.dart';
 import 'package:vriddhiapps/features/weather/presentation/screens/weather_screen.dart';
 import 'package:vriddhiapps/features/crop_planner/presentation/screens/crop_planner_screen.dart';
@@ -119,40 +121,71 @@ class AppShell extends ConsumerStatefulWidget {
 class _AppShellState extends ConsumerState<AppShell> {
   int _selectedIndex = 0;
 
-  final navigationItems = [
-    (path: '/', label: 'Home', icon: Icons.home),
-    (path: '/weather', label: 'Weather', icon: Icons.cloud),
-    (path: '/crop-planner', label: 'Planner', icon: Icons.grass),
-    (path: '/mandi-price', label: 'Prices', icon: Icons.store),
-    (path: '/fertilizer', label: 'Fertilizer', icon: Icons.agriculture),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vriddhi'),
+    final localizationAsync = ref.watch(appLocalizationProvider);
+
+    return localizationAsync.when(
+      data: (localization) {
+        final navigationItems = [
+          (path: '/', label: localization.translate('home'), icon: Icons.home),
+          (path: '/weather', label: localization.translate('weather'), icon: Icons.cloud),
+          (path: '/crop-planner', label: localization.translate('cropPlanner'), icon: Icons.grass),
+          (path: '/mandi-price', label: localization.translate('mandiPrices'), icon: Icons.store),
+          (path: '/fertilizer', label: localization.translate('fertilizerNav'), icon: Icons.agriculture),
+        ];
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(localization.translate('appName')),
+            actions: const [
+              UniversalLanguageButton(),
+            ],
+          ),
+          body: _buildBody(context),
+          bottomNavigationBar: BottomNavigationBar(
+            items: navigationItems.map((item) => BottomNavigationBarItem(icon: Icon(item.icon), label: item.label)).toList(),
+            currentIndex: _selectedIndex,
+            onTap: (index) {
+              setState(() => _selectedIndex = index);
+              context.go(navigationItems[index].path);
+            },
+          ),
+        );
+      },
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
       ),
-      body: _buildBody(context),
-      bottomNavigationBar: BottomNavigationBar(
-        items: navigationItems.map((item) => BottomNavigationBarItem(icon: Icon(item.icon), label: item.label)).toList(),
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() => _selectedIndex = index);
-          context.go(navigationItems[index].path);
-        },
+      error: (error, stack) => Scaffold(
+        body: Center(child: Text('Error loading translations: $error')),
       ),
     );
   }
 
   Widget _buildBody(BuildContext context) {
-    final location = GoRouterState.of(context).matchedLocation;
-    final newIndex = navigationItems.indexWhere((item) => item.path == location);
-    if (newIndex != -1 && newIndex != _selectedIndex) {
-      Future.microtask(() {
-        if (mounted) setState(() => _selectedIndex = newIndex);
-      });
-    }
-    return widget.child;
+    final localizationAsync = ref.watch(appLocalizationProvider);
+    
+    return localizationAsync.when(
+      data: (localization) {
+        final navigationItems = [
+          (path: '/', label: localization.translate('home'), icon: Icons.home),
+          (path: '/weather', label: localization.translate('weather'), icon: Icons.cloud),
+          (path: '/crop-planner', label: localization.translate('cropPlanner'), icon: Icons.grass),
+          (path: '/mandi-price', label: localization.translate('mandiPrices'), icon: Icons.store),
+          (path: '/fertilizer', label: localization.translate('fertilizerNav'), icon: Icons.agriculture),
+        ];
+        
+        final location = GoRouterState.of(context).matchedLocation;
+        final newIndex = navigationItems.indexWhere((item) => item.path == location);
+        if (newIndex != -1 && newIndex != _selectedIndex) {
+          Future.microtask(() {
+            if (mounted) setState(() => _selectedIndex = newIndex);
+          });
+        }
+        return widget.child;
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
+    );
   }
 }

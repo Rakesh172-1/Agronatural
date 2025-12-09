@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 import 'package:vriddhiapps/features/weather/presentation/providers/weather_provider.dart';
 
 class WeatherScreen extends ConsumerStatefulWidget {
@@ -54,8 +55,10 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
     final forecastState = ref.watch(
       weatherForecastProvider((latitude, longitude)),
     );
+    final localizationAsync = ref.watch(appLocalizationProvider);
 
-    return RefreshIndicator(
+    return localizationAsync.when(
+      data: (localization) => RefreshIndicator(
       onRefresh: () => ref.read(weatherNotifierProvider.notifier).fetchWeather(
             latitude: latitude,
             longitude: longitude,
@@ -70,7 +73,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
             children: [
               // Header
               Text(
-                'आज का मौसम',
+                localization.translate('currentWeather'),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.green[800],
@@ -96,7 +99,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
 
               // Forecast Header
               Text(
-                'आने वाले 7 दिन',
+                localization.translate('forecast'),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Colors.green[800],
@@ -114,13 +117,16 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
                     ),
                   ),
                 ),
-                error: (error, stack) => _buildErrorCard('पूर्वानुमान लोड नहीं हो सका'),
-                data: (forecast) => _buildForecastList(context, forecast),
+                error: (error, stack) => _buildErrorCard(localization.translate('error')),
+                data: (forecast) => _buildForecastList(context, forecast, localization),
               ),
             ],
           ),
         ),
       ),
+      ),
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (error, stack) => const Scaffold(body: Center(child: Text('Error loading translations'))),
     );
   }
 
@@ -241,7 +247,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
     );
   }
 
-  Widget _buildForecastList(BuildContext context, List<dynamic> forecast) {
+  Widget _buildForecastList(BuildContext context, List<dynamic> forecast, dynamic localization) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

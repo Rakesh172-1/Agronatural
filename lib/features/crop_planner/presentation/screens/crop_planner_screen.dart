@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 import 'package:vriddhiapps/core/constants/app_constants.dart';
 import 'package:vriddhiapps/features/crop_planner/presentation/providers/crop_planner_provider.dart';
 
@@ -12,23 +13,25 @@ class CropPlannerScreen extends ConsumerWidget {
     final selectedSeason = ref.watch(selectedSeasonProvider);
     final selectedCrop = ref.watch(selectedCropProvider);
     final cropPlanState = ref.watch(cropPlannerNotifierProvider);
+    final localizationAsync = ref.watch(appLocalizationProvider);
 
-    return SingleChildScrollView(
+    return localizationAsync.when(
+      data: (localization) => SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('फसल योजनाकार', style: Theme.of(context).textTheme.headlineSmall),
+            Text(localization.translate('cropPlanner'), style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 24),
             
             // Season selector
-            Text('मौसम चुनें', style: Theme.of(context).textTheme.bodyLarge),
+            Text(localization.translate('selectSeason'), style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 8),
             DropdownButton<String>(
               isExpanded: true,
               value: selectedSeason,
-              items: AppConstants.seasons.map((season) => DropdownMenuItem(value: season, child: Text(season))).toList(),
+              items: AppConstants.seasons.map((season) => DropdownMenuItem(value: season, child: Text(localization.translate(season.toLowerCase())))).toList(),
               onChanged: (value) {
                 if (value != null) ref.read(selectedSeasonProvider.notifier).state = value;
               },
@@ -36,12 +39,12 @@ class CropPlannerScreen extends ConsumerWidget {
             const SizedBox(height: 24),
 
             // Crop selector
-            Text('फसल चुनें', style: Theme.of(context).textTheme.bodyLarge),
+            Text(localization.translate('selectCrop'), style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 8),
             DropdownButton<String>(
               isExpanded: true,
               value: selectedCrop,
-              items: AppConstants.crops.map((crop) => DropdownMenuItem(value: crop, child: Text(crop))).toList(),
+              items: AppConstants.crops.map((crop) => DropdownMenuItem(value: crop, child: Text(localization.translate(crop.toLowerCase())))).toList(),
               onChanged: (value) {
                 if (value != null) ref.read(selectedCropProvider.notifier).state = value;
               },
@@ -120,6 +123,9 @@ class CropPlannerScreen extends ConsumerWidget {
           ],
         ),
       ),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, s) => const Center(child: Text('Error')),
     );
   }
 }

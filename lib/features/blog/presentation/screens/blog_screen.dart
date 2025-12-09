@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 import 'package:vriddhiapps/features/blog/presentation/providers/blog_provider.dart';
 
 class BlogScreen extends ConsumerStatefulWidget {
@@ -22,11 +23,13 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
   @override
   Widget build(BuildContext context) {
     final blogState = ref.watch(blogNotifierProvider);
+    final localizationAsync = ref.watch(appLocalizationProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Blog'),
-      ),
+    return localizationAsync.when(
+      data: (localization) => Scaffold(
+        appBar: AppBar(
+          title: Text(localization.translate('blog')),
+        ),
       body: blogState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(
@@ -87,6 +90,9 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
           ),
         ),
       ),
+      ),
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, s) => const Scaffold(body: Center(child: Text('Error'))),
     );
   }
 

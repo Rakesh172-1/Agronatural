@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vriddhiapps/core/localization/app_locale_provider.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 import 'package:vriddhiapps/features/weather/presentation/providers/weather_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -13,7 +13,7 @@ class HomeScreen extends ConsumerWidget {
     const double latitude = 31.6340;
     const double longitude = 74.8711;
     final weatherState = ref.watch(currentWeatherProvider((latitude, longitude)));
-    final localizationAsync = ref.watch(currentLocalizationsProvider);
+    final localizationAsync = ref.watch(appLocalizationProvider);
 
     return localizationAsync.when(
       data: (localization) => SingleChildScrollView(
@@ -81,7 +81,7 @@ class HomeScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        localization.currentWeather,
+                        localization.translate('currentWeather'),
                         style: Theme.of(context).textTheme.labelMedium?.copyWith(
                           color: Colors.white70,
                           letterSpacing: 0.5,
@@ -97,14 +97,14 @@ class HomeScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        weather?.condition ?? localization.loading,
+                        weather?.condition ?? localization.translate('loading'),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        localization.tapToViewDetails,
+                        localization.translate('tapToViewDetails'),
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: Colors.white70,
                           fontStyle: FontStyle.italic,
@@ -147,60 +147,60 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildFeatureGrid(BuildContext context, dynamic localization) {
     final features = [
       (
-        title: localization.mandiPrices,
+        title: localization.translate('mandiPrices'),
         icon: Icons.store,
         color: Color(0xFF52B788),
         route: '/mandi-price',
-        description: localization.checkMarketPrices
+        description: localization.translate('checkMarketPrices')
       ),
       (
-        title: localization.cropPlanner,
+        title: localization.translate('cropPlanner'),
         icon: Icons.grain,
         color: Color(0xFFFFA726),
         route: '/crop-planner',
-        description: localization.planYourCrops
+        description: localization.translate('planYourCrops')
       ),
       (
-        title: localization.fertilizer,
+        title: localization.translate('fertilizerNav'),
         icon: Icons.agriculture,
         color: Color(0xFF42A5F5),
         route: '/fertilizer',
-        description: localization.fertilizerGuide
+        description: localization.translate('fertilizerGuide')
       ),
       (
-        title: localization.governmentSchemes,
+        title: localization.translate('governmentSchemes'),
         icon: Icons.public,
         color: Color(0xFFD946A6),
         route: '/government-schemes',
-        description: localization.viewSchemes
+        description: localization.translate('viewSchemes')
       ),
       (
-        title: localization.blog,
+        title: localization.translate('blog'),
         icon: Icons.newspaper,
         color: Color(0xFF66BB6A),
         route: '/blog',
-        description: localization.blogDescription
+        description: localization.translate('blogDescription')
       ),
       (
-        title: localization.farmCalculator,
+        title: localization.translate('farmCalculator'),
         icon: Icons.calculate,
         color: Color(0xFF78909C),
         route: '/calculator',
-        description: localization.calculateFarmMetrics
+        description: localization.translate('calculateFarmMetrics')
       ),
       (
-        title: localization.loanSchemes,
+        title: localization.translate('loanSchemes'),
         icon: Icons.account_balance,
         color: Color(0xFF8D6E63),
         route: '/loan-schemes',
-        description: localization.loanSchemesDescription
+        description: localization.translate('loanSchemesDescription')
       ),
       (
-        title: localization.diseaseDetector,
+        title: localization.translate('diseaseDetector'),
         icon: Icons.bug_report,
         color: Color(0xFFEF5350),
         route: '/disease-detector',
-        description: localization.diseaseDetectorDescription
+        description: localization.translate('diseaseDetectorDescription')
       ),
     ];
 

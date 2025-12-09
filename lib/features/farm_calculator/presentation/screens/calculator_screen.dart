@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 import 'package:vriddhiapps/features/farm_calculator/presentation/providers/calculator_provider.dart';
 
 class FarmCalculatorScreen extends ConsumerStatefulWidget {
@@ -27,31 +28,41 @@ class _FarmCalculatorScreenState extends ConsumerState<FarmCalculatorScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Farm Calculator'),
-        bottom: TabBar(
+    final localizationAsync = ref.watch(appLocalizationProvider);
+    
+    return localizationAsync.when(
+      data: (localization) => Scaffold(
+        appBar: AppBar(
+          title: Text(localization.translate('calculator')),
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: localization.translate('seedQuantity')),
+              Tab(text: localization.translate('farmingCost')),
+              Tab(text: localization.translate('yieldAndProfit')),
+            ],
+          ),
+        ),
+        body: TabBarView(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Seed'),
-            Tab(text: 'Cost'),
-            Tab(text: 'Yield'),
+          children: [
+            _SeedCalculator(localization: localization),
+            _CostCalculator(localization: localization),
+            _YieldCalculator(localization: localization),
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _SeedCalculator(),
-          _CostCalculator(),
-          _YieldCalculator(),
-        ],
-      ),
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, s) => const Scaffold(body: Center(child: Text('Error'))),
     );
   }
 }
 
 class _SeedCalculator extends ConsumerStatefulWidget {
+  final AppLocalization localization;
+  
+  const _SeedCalculator({required this.localization});
+  
   @override
   ConsumerState<_SeedCalculator> createState() => _SeedCalculatorState();
 }
@@ -84,7 +95,7 @@ class _SeedCalculatorState extends ConsumerState<_SeedCalculator> {
             },
           ),
           const SizedBox(height: 24),
-          Text('Land Size (Acres)', style: Theme.of(context).textTheme.bodyLarge),
+          Text(widget.localization.translate('landSize'), style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 8),
           TextField(
             keyboardType: TextInputType.number,
@@ -92,10 +103,10 @@ class _SeedCalculatorState extends ConsumerState<_SeedCalculator> {
               setState(() => landSize = double.tryParse(value) ?? 1);
             },
             decoration: InputDecoration(
-              hintText: 'Enter land size',
+              hintText: widget.localization.translate('enterLandSize'),
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-              prefixText: 'Land: ',
-              suffixText: 'acres',
+              prefixText: widget.localization.translate('land'),
+              suffixText: widget.localization.translate('acres'),
             ),
           ),
           const SizedBox(height: 24),
@@ -129,6 +140,10 @@ class _SeedCalculatorState extends ConsumerState<_SeedCalculator> {
 }
 
 class _CostCalculator extends ConsumerStatefulWidget {
+  final AppLocalization localization;
+  
+  const _CostCalculator({required this.localization});
+  
   @override
   ConsumerState<_CostCalculator> createState() => _CostCalculatorState();
 }
@@ -151,13 +166,13 @@ class _CostCalculatorState extends ConsumerState<_CostCalculator> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Select Crop', style: Theme.of(context).textTheme.bodyLarge),
+          Text(widget.localization.translate('selectCrop'), style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 8),
           DropdownButton<String>(
             isExpanded: true,
             value: selectedCrop,
             items: crops
-                .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                .map((c) => DropdownMenuItem(value: c, child: Text(widget.localization.translate(c.toLowerCase()))))
                 .toList(),
             onChanged: (value) {
               if (value != null) setState(() => selectedCrop = value);
@@ -226,6 +241,10 @@ class _CostCalculatorState extends ConsumerState<_CostCalculator> {
 }
 
 class _YieldCalculator extends ConsumerStatefulWidget {
+  final AppLocalization localization;
+  
+  const _YieldCalculator({required this.localization});
+  
   @override
   ConsumerState<_YieldCalculator> createState() => _YieldCalculatorState();
 }
@@ -255,7 +274,7 @@ class _YieldCalculatorState extends ConsumerState<_YieldCalculator> {
             isExpanded: true,
             value: selectedCrop,
             items: crops
-                .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                .map((c) => DropdownMenuItem(value: c, child: Text(widget.localization.translate(c.toLowerCase()))))
                 .toList(),
             onChanged: (value) {
               if (value != null) {

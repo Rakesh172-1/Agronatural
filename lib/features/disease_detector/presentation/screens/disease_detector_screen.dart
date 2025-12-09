@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 import 'package:vriddhiapps/features/disease_detector/presentation/providers/disease_detector_provider.dart';
 
 class DiseaseDetectorScreen extends ConsumerStatefulWidget {
@@ -34,16 +35,22 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Disease Detector'),
-        bottom: TabBar(controller: _tabController, tabs: const [Tab(text: 'Browse'), Tab(text: 'Detect'), Tab(text: 'Search')]),
+    final localizationAsync = ref.watch(appLocalizationProvider);
+    
+    return localizationAsync.when(
+      data: (localization) => Scaffold(
+        appBar: AppBar(
+          title: Text(localization.translate('diseaseDetector')),
+          bottom: TabBar(controller: _tabController, tabs: [Tab(text: localization.translate('browseTab')), Tab(text: localization.translate('detectDiseaseTab')), Tab(text: localization.translate('searchTab'))]),
+        ),
+        body: TabBarView(controller: _tabController, children: [_buildBrowseTab(localization), _buildDetectTab(localization), _buildSearchTab(localization)]),
       ),
-      body: TabBarView(controller: _tabController, children: [_buildBrowseTab(), _buildDetectTab(), _buildSearchTab()]),
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, s) => const Scaffold(body: Center(child: Text('Error'))),
     );
   }
 
-  Widget _buildBrowseTab() {
+  Widget _buildBrowseTab(AppLocalization localization) {
     final diseases = ref.watch(diseaseDetectorNotifierProvider);
     
     return Column(
@@ -53,7 +60,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
           child: DropdownButton<String>(
             isExpanded: true,
             value: selectedCrop,
-            items: crops.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+            items: crops.map((c) => DropdownMenuItem(value: c, child: Text(localization.translate(c.toLowerCase())))).toList(),
             onChanged: (value) {
               if (value != null) {
                 setState(() => selectedCrop = value);
@@ -69,7 +76,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
                 : ListView.builder(
                     padding: const EdgeInsets.all(8),
                     itemCount: list.length,
-                    itemBuilder: (context, index) => _buildDiseaseCard(list[index]),
+                    itemBuilder: (context, index) => _buildDiseaseCard(list[index], localization),
                   ),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (err, _) => Center(child: Text('Error: $err')),
@@ -79,7 +86,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
     );
   }
 
-  Widget _buildDetectTab() {
+  Widget _buildDetectTab(AppLocalization localization) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -130,7 +137,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
     );
   }
 
-  Widget _buildSearchTab() {
+  Widget _buildSearchTab(AppLocalization localization) {
     final searchResults = ref.watch(diseaseDetectorNotifierProvider);
 
     return Column(
@@ -140,7 +147,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
           child: TextField(
             controller: searchController,
             decoration: InputDecoration(
-              hintText: 'Search diseases...',
+              hintText: localization.translate('searchDiseases'),
               prefixIcon: const Icon(Icons.search),
               suffixIcon: searchController.text.isNotEmpty
                   ? IconButton(icon: const Icon(Icons.clear), onPressed: () => setState(() => searchController.clear()))
@@ -164,7 +171,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
                 : ListView.builder(
                     padding: const EdgeInsets.all(8),
                     itemCount: list.length,
-                    itemBuilder: (context, index) => _buildDiseaseCard(list[index]),
+                    itemBuilder: (context, index) => _buildDiseaseCard(list[index], localization),
                   ),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (err, _) => Center(child: Text('Error: $err')),
@@ -174,10 +181,10 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
     );
   }
 
-  Widget _buildDiseaseCard(dynamic disease) {
-    final severityColor = disease.severity == 'Critical'
+  Widget _buildDiseaseCard(dynamic disease, AppLocalization localization) {
+    final severityColor = disease.severity == 'critical'
         ? Colors.red
-        : disease.severity == 'High'
+        : disease.severity == 'high'
             ? Colors.orange
             : Colors.amber;
 
@@ -191,26 +198,26 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
             Row(
               children: [
                 Expanded(
-                  child: Text(disease.diseaseName, style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                  child: Text(localization.translate(disease.diseaseName), style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(color: severityColor[50], borderRadius: BorderRadius.circular(12), border: Border.all(color: severityColor)),
-                  child: Text(disease.severity, style: TextStyle(fontSize: 11, color: severityColor, fontWeight: FontWeight.bold)),
+                  child: Text(localization.translate(disease.severity), style: TextStyle(fontSize: 11, color: severityColor, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            Text('Crop: ${disease.cropType}', style: Theme.of(context).textTheme.bodySmall),
+            Text('${localization.translate('crop')}: ${localization.translate(disease.cropType.toLowerCase())}', style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 8),
-            Text('Cause: ${disease.cause}', style: Theme.of(context).textTheme.bodySmall),
+            Text('${localization.translate('cause')}: ${localization.translate(disease.cause)}', style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.info_outline, size: 18),
-                label: const Text('View Details'),
-                onPressed: () => _showDiseaseDetails(disease),
+                label: Text(localization.translate('viewDetails')),
+                onPressed: () => _showDiseaseDetails(disease, localization),
               ),
             ),
           ],
@@ -219,7 +226,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
     );
   }
 
-  void _showDiseaseDetails(dynamic disease) {
+  void _showDiseaseDetails(dynamic disease, AppLocalization localization) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -238,17 +245,17 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
             children: [
               Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)))),
               const SizedBox(height: 20),
-              Text(disease.diseaseName, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+              Text(localization.translate(disease.diseaseName), style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
-              Text('Crop: ${disease.cropType}', style: Theme.of(context).textTheme.bodySmall),
+              Text('${localization.translate('crop')}: ${localization.translate(disease.cropType.toLowerCase())}', style: Theme.of(context).textTheme.bodySmall),
               const SizedBox(height: 16),
-              _detailSection('Symptoms', disease.symptoms.join('\n• '), prefix: '• '),
-              _detailSection('Cause', disease.cause),
-              _detailSection('Severity', disease.severity),
-              _detailSection('Treatment', disease.treatment),
-              _detailSection('Prevention', disease.prevention),
+              _detailSection(localization.translate('symptoms'), disease.symptoms.join('\n• '), prefix: '• '),
+              _detailSection(localization.translate('cause'), localization.translate(disease.cause)),
+              _detailSection(localization.translate('severity'), localization.translate(disease.severity)),
+              _detailSection(localization.translate('treatment'), disease.treatment),
+              _detailSection(localization.translate('prevention'), disease.prevention),
               const SizedBox(height: 20),
-              ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+              ElevatedButton(onPressed: () => Navigator.pop(context), child: Text(localization.translate('cancel'))),
             ],
           ),
         ),
@@ -271,20 +278,27 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
   }
 
   void _detectDisease() async {
+    final localizationAsync = ref.read(appLocalizationProvider);
     final result = await ref.read(
       detectDiseaseProvider((crop: selectedCrop, symptoms: selectedSymptoms)).future,
     );
 
     if (!mounted) return;
 
-    if (result != null) {
-      _showDiseaseDetails(result);
-      setState(() => selectedSymptoms.clear());
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No disease detected with these symptoms')),
-      );
-    }
+    localizationAsync.when(
+      data: (localization) {
+        if (result != null) {
+          _showDiseaseDetails(result, localization);
+          setState(() => selectedSymptoms.clear());
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No disease detected with these symptoms')),
+          );
+        }
+      },
+      loading: () {},
+      error: (_, __) {},
+    );
   }
 
   Widget _buildDetectionResult() {

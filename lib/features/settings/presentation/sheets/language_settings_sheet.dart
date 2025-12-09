@@ -1,111 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vriddhiapps/core/localization/app_locale_provider.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 
 class LanguageSettingsSheet extends ConsumerWidget {
-  const LanguageSettingsSheet({super.key});
-
-  String _getLanguageEmoji(String locale) {
-    switch (locale) {
-      case 'en':
-        return '🇺🇸';
-      case 'hi':
-        return '🇮🇳';
-      case 'pa':
-        return '🇵🇰';
-      case 'mr':
-        return '🇮🇳';
-      case 'bn':
-        return '🇧🇩';
-      default:
-        return '🌐';
-    }
-  }
+  const LanguageSettingsSheet({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentLocale = ref.watch(appLocaleProvider);
+    final currentLanguage = ref.watch(appLanguageProvider);
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Select Language',
-                  style: TextStyle(
-                    fontSize: 18,
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              'Select Language',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
             ),
           ),
           const Divider(),
-          // Language options
-          Expanded(
-            child: ListView.builder(
-              itemCount: supportedLocales.length,
-              itemBuilder: (context, index) {
-                final locale = supportedLocales[index];
-                final localeName = localeNames[locale] ?? locale;
-
-                return ListTile(
-                  leading: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: currentLocale == locale
-                          ? const Color(0xFF52B788)
-                          : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        _getLanguageEmoji(locale),
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ),
-                  title: Text(
-                    localeName,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: currentLocale == locale
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                  trailing: currentLocale == locale
-                      ? const Icon(
-                          Icons.check_circle,
-                          color: Color(0xFF52B788),
-                          size: 24,
-                        )
-                      : null,
-                  onTap: () {
-                    ref.read(appLocaleProvider.notifier).state = locale;
-                    Navigator.pop(context);
-                  },
-                );
-              },
-            ),
+          _buildLanguageOption(
+            context,
+            ref,
+            'en',
+            'English',
+            currentLanguage,
           ),
+          _buildLanguageOption(
+            context,
+            ref,
+            'hi',
+            'हिन्दी',
+            currentLanguage,
+          ),
+          _buildLanguageOption(
+            context,
+            ref,
+            'pa',
+            'ਪੰਜਾਬੀ',
+            currentLanguage,
+          ),
+          const SizedBox(height: 16),
         ],
       ),
+    );
+  }
+
+  Widget _buildLanguageOption(
+    BuildContext context,
+    WidgetRef ref,
+    String languageCode,
+    String languageName,
+    String currentLanguage,
+  ) {
+    final isSelected = currentLanguage == languageCode;
+
+    return ListTile(
+      title: Text(languageName),
+      trailing: isSelected
+          ? const Icon(Icons.check, color: Colors.green)
+          : null,
+      selected: isSelected,
+      selectedTileColor: Colors.green.withOpacity(0.1),
+      onTap: () {
+        ref.read(appLanguageProvider.notifier).state = languageCode;
+        Navigator.pop(context);
+      },
     );
   }
 }

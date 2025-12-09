@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 
 class GovernmentSchemesScreen extends ConsumerWidget {
   const GovernmentSchemesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
+    final localizationAsync = ref.watch(appLocalizationProvider);
+    
+    return localizationAsync.when(
+      data: (localization) => SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('सरकारी योजनाएं', style: Theme.of(context).textTheme.headlineSmall),
+            Text(localization.translate('governmentSchemes'), style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 24),
             
             // Schemes List
             _buildSchemeCard(
               context,
-              'प्रधानमंत्री कृषि सिंचाई योजना',
-              'खेत की सिंचाई के लिए सहायता',
+              localization.translate('governmentSchemes'),
+              localization.translate('viewSchemes'),
               Icons.water_drop,
             ),
             const SizedBox(height: 16),
@@ -65,6 +69,9 @@ class GovernmentSchemesScreen extends ConsumerWidget {
           ],
         ),
       ),
+      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, s) => const Center(child: Text('Error')),
     );
   }
 

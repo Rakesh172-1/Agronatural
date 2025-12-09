@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 import 'package:vriddhiapps/features/loan_schemes/presentation/providers/loan_schemes_provider.dart';
 
 class LoanSchemesScreen extends ConsumerStatefulWidget {
@@ -23,24 +24,29 @@ class _LoanSchemesScreenState extends ConsumerState<LoanSchemesScreen> {
   @override
   Widget build(BuildContext context) {
     final schemes = ref.watch(loanSchemesNotifierProvider);
+    final localizationAsync = ref.watch(appLocalizationProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Loan Schemes for Farmers'),
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          _buildFilterBar(),
-          Expanded(
-            child: schemes.when(
-              data: (schemeList) => _buildSchemesList(schemeList),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => _buildErrorWidget(err),
+    return localizationAsync.when(
+      data: (localization) => Scaffold(
+        appBar: AppBar(
+          title: Text(localization.translate('loanSchemes')),
+          elevation: 0,
+        ),
+        body: Column(
+          children: [
+            _buildFilterBar(),
+            Expanded(
+              child: schemes.when(
+                data: (schemeList) => _buildSchemesList(schemeList),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (err, stack) => _buildErrorWidget(err),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, s) => const Scaffold(body: Center(child: Text('Error'))),
     );
   }
 

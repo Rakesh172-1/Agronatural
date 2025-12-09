@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vriddhiapps/core/localization/app_localization.dart';
 import 'package:vriddhiapps/core/constants/app_constants.dart';
 import 'package:vriddhiapps/features/fertilizer/presentation/providers/fertilizer_provider.dart';
 
@@ -12,11 +13,13 @@ class FertilizerScreen extends ConsumerWidget {
     final selectedSoilType = ref.watch(selectedSoilTypeProvider);
     final landSize = ref.watch(landSizeProvider);
     final planState = ref.watch(fertilizerNotifierProvider);
+    final localizationAsync = ref.watch(appLocalizationProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fertilizer Guide'),
-      ),
+    return localizationAsync.when(
+      data: (localization) => Scaffold(
+        appBar: AppBar(
+          title: Text(localization.translate('fertilizerTitle')),
+        ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -25,30 +28,30 @@ class FertilizerScreen extends ConsumerWidget {
             children: [
               Text('Select Fertilizer', style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 24),
-              Text('Choose Crop', style: Theme.of(context).textTheme.bodyLarge),
+              Text(localization.translate('chooseCrop'), style: Theme.of(context).textTheme.bodyLarge),
               const SizedBox(height: 8),
               DropdownButton<String>(
                 isExpanded: true,
                 value: selectedCrop,
-                items: AppConstants.crops.map((crop) => DropdownMenuItem(value: crop, child: Text(crop))).toList(),
+                items: AppConstants.crops.map((crop) => DropdownMenuItem(value: crop, child: Text(localization.translate(crop.toLowerCase())))).toList(),
                 onChanged: (value) { if (value != null) ref.read(selectedFertilizerCropProvider.notifier).state = value; },
               ),
               const SizedBox(height: 24),
-              Text('Soil Type', style: Theme.of(context).textTheme.bodyLarge),
+              Text(localization.translate('soilType'), style: Theme.of(context).textTheme.bodyLarge),
               const SizedBox(height: 8),
               DropdownButton<String>(
                 isExpanded: true,
                 value: selectedSoilType,
-                items: AppConstants.soilTypes.map((type) => DropdownMenuItem(value: type, child: Text(type))).toList(),
+                items: AppConstants.soilTypes.map((type) => DropdownMenuItem(value: type, child: Text(localization.translate(type.toLowerCase().replaceAll(' ', ''))))).toList(),
                 onChanged: (value) { if (value != null) ref.read(selectedSoilTypeProvider.notifier).state = value; },
               ),
               const SizedBox(height: 24),
-              Text('Land Size (Acres)', style: Theme.of(context).textTheme.bodyLarge),
+              Text(localization.translate('landSize'), style: Theme.of(context).textTheme.bodyLarge),
               const SizedBox(height: 8),
               TextField(
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  hintText: 'Enter size in acres',
+                  hintText: localization.translate('enterSizeInAcres'),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 onChanged: (value) { 
@@ -139,6 +142,9 @@ class FertilizerScreen extends ConsumerWidget {
           ),
         ),
       ),
+      ),
+      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (e, s) => const Scaffold(body: Center(child: Text('Error'))),
     );
   }
 }
