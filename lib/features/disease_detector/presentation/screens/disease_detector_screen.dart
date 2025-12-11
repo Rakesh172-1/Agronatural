@@ -72,7 +72,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
         Expanded(
           child: diseases.when(
             data: (list) => list.isEmpty
-                ? Center(child: Text('No diseases found for $selectedCrop'))
+                ? Center(child: Text('${localization.translate('noDiseasesFoundFor')} $selectedCrop'))
                 : ListView.builder(
                     padding: const EdgeInsets.all(8),
                     itemCount: list.length,
@@ -92,7 +92,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Select Crop', style: Theme.of(context).textTheme.titleMedium),
+          Text(localization.translate('selectCropLabel'), style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           DropdownButton<String>(
             isExpanded: true,
@@ -101,7 +101,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
             onChanged: (value) => setState(() => selectedCrop = value!),
           ),
           const SizedBox(height: 20),
-          Text('Select Symptoms', style: Theme.of(context).textTheme.titleMedium),
+          Text(localization.translate('selectSymptoms'), style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -167,7 +167,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
         Expanded(
           child: searchResults.when(
             data: (list) => list.isEmpty
-                ? Center(child: Text(searchController.text.isEmpty ? 'All diseases' : 'No results found'))
+                ? Center(child: Text(searchController.text.isEmpty ? localization.translate('allDiseases') : localization.translate('noResultsFound')))
                 : ListView.builder(
                     padding: const EdgeInsets.all(8),
                     itemCount: list.length,
@@ -292,7 +292,7 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
           setState(() => selectedSymptoms.clear());
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No disease detected with these symptoms')),
+            SnackBar(content: Text(localization.translate('noDiseaseDetected'))),
           );
         }
       },
@@ -304,28 +304,33 @@ class _DiseaseDetectorScreenState extends ConsumerState<DiseaseDetectorScreen> w
   Widget _buildDetectionResult() {
     return Consumer(
       builder: (context, ref, child) {
+        final localizationAsync = ref.watch(appLocalizationProvider);
         final result = ref.watch(
           detectDiseaseProvider((crop: selectedCrop, symptoms: selectedSymptoms)),
         );
 
-        return result.when(
-          data: (disease) => disease != null
-              ? Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Detection Result', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 12),
-                        LinearProgressIndicator(value: disease.confidenceScore / 100),
-                        const SizedBox(height: 8),
-                        Text('Confidence: ${disease.confidenceScore}%', style: Theme.of(context).textTheme.bodySmall),
-                      ],
+        return localizationAsync.when(
+          data: (localization) => result.when(
+            data: (disease) => disease != null
+                ? Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(localization.translate('detectionResult'), style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 12),
+                          LinearProgressIndicator(value: disease.confidenceScore / 100),
+                          const SizedBox(height: 8),
+                          Text('Confidence: ${disease.confidenceScore}%', style: Theme.of(context).textTheme.bodySmall),
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              : const SizedBox(),
+                  )
+                : const SizedBox(),
+            loading: () => const SizedBox(),
+            error: (err, _) => const SizedBox(),
+          ),
           loading: () => const SizedBox(),
           error: (err, _) => const SizedBox(),
         );

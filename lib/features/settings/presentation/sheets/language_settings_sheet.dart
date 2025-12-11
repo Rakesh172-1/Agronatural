@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vriddhiapps/core/localization/app_localization.dart';
 
 class LanguageSettingsSheet extends ConsumerWidget {
-  const LanguageSettingsSheet({Key? key}) : super(key: key);
+  const LanguageSettingsSheet({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

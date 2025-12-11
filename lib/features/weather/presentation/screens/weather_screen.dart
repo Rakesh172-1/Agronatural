@@ -126,7 +126,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen> {
       ),
       ),
       loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (error, stack) => const Scaffold(body: Center(child: Text('Error loading translations'))),
+      error: (error, stack) => Scaffold(body: Center(child: Text(localizationAsync.value?.translate('errorLoadingTranslations') ?? 'Error'))),
     );
   }
 

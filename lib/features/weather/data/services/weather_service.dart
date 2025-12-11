@@ -19,23 +19,32 @@ class WeatherService {
         queryParameters: {
           'latitude': latitude,
           'longitude': longitude,
-          'current': 'temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m',
+          'current': 'temperature_2m,apparent_temperature,weather_code,relative_humidity_2m,wind_speed_10m,uv_index,surface_pressure,visibility',
           'timezone': 'Asia/Kolkata',
         },
       );
 
       final currentData = response.data['current'];
       final temperature = (currentData['temperature_2m'] as num).toDouble();
+      final feelsLike = (currentData['apparent_temperature'] as num?)?.toDouble() ?? temperature;
       final humidity = (currentData['relative_humidity_2m'] as num).toDouble();
       final windSpeed = (currentData['wind_speed_10m'] as num).toDouble();
       final weatherCode = currentData['weather_code'] as int;
+      final uvIndex = (currentData['uv_index'] as num?)?.toDouble() ?? 0.0;
+      final airPressure = (currentData['surface_pressure'] as num?)?.toDouble() ?? 1013.25;
+      final visibility = (currentData['visibility'] as num?)?.toDouble() ?? 10.0;
+      final visibilityKm = visibility / 1000.0;
 
       return Weather(
         location: location,
         temperature: temperature,
+        feelsLike: feelsLike,
         condition: _getWeatherDescription(weatherCode),
         humidity: humidity,
         windSpeed: windSpeed,
+        uvIndex: uvIndex,
+        airPressure: airPressure,
+        visibility: visibilityKm,
         lastUpdated: DateTime.now(),
       );
     } catch (e) {
@@ -43,9 +52,13 @@ class WeatherService {
       return Weather(
         location: location,
         temperature: 28.5,
+        feelsLike: 30.0,
         condition: 'Partly Cloudy',
         humidity: 65.0,
         windSpeed: 12.5,
+        uvIndex: 6.5,
+        airPressure: 1013.25,
+        visibility: 10.0,
         lastUpdated: DateTime.now(),
       );
     }
@@ -124,23 +137,36 @@ class WeatherService {
     switch (code) {
       case 0:
         return 'Clear';
-      case 1 || 2:
+      case 1:
+      case 2:
         return 'Partly Cloudy';
       case 3:
         return 'Overcast';
-      case 45 || 48:
+      case 45:
+      case 48:
         return 'Foggy';
-      case 51 || 53 || 55:
+      case 51:
+      case 53:
+      case 55:
         return 'Drizzle';
-      case 61 || 63 || 65:
+      case 61:
+      case 63:
+      case 65:
         return 'Rain';
-      case 71 || 73 || 75:
+      case 71:
+      case 73:
+      case 75:
         return 'Snow';
-      case 80 || 81 || 82:
+      case 80:
+      case 81:
+      case 82:
         return 'Rain Showers';
-      case 85 || 86:
+      case 85:
+      case 86:
         return 'Snow Showers';
-      case 95 || 96 || 99:
+      case 95:
+      case 96:
+      case 99:
         return 'Thunderstorm';
       default:
         return 'Unknown';

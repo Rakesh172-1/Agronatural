@@ -65,7 +65,7 @@ class MandiPriceScreen extends ConsumerWidget {
                     // District selector
                     _buildAsyncDropdownField(
                       context,
-                      'जिला चुनें',
+                      localization.translate('selectDistrict'),
                       selectedDistrict,
                       districtState,
                       (value) {
@@ -73,13 +73,14 @@ class MandiPriceScreen extends ConsumerWidget {
                           ref.read(selectedDistrictProvider.notifier).state = value;
                         }
                       },
+                      localization,
                     ),
                     const SizedBox(height: 16),
 
                     // Crop selector
                     _buildDropdownField(
                       context,
-                      'फसल चुनें',
+                      localization.translate('selectCrop'),
                       selectedCrop,
                       AppConstants.crops,
                       (value) {
@@ -100,7 +101,7 @@ class MandiPriceScreen extends ConsumerWidget {
                               .fetchPrices(selectedState, selectedDistrict, selectedCrop);
                         },
                         icon: const Icon(Icons.trending_up),
-                        label: const Text('भाव देखें'),
+                        label: Text(localization.translate('viewPrices')),
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           backgroundColor: Colors.green[700],
@@ -241,6 +242,7 @@ class MandiPriceScreen extends ConsumerWidget {
     String value,
     AsyncValue<List<String>> asyncItems,
     Function(String?) onChanged,
+    AppLocalization localization,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,7 +273,7 @@ class MandiPriceScreen extends ConsumerWidget {
               border: Border.all(color: Colors.red[300]!),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Text('Error loading districts',
+            child: Text(localization.translate('errorLoadingDistricts'),
                 style: TextStyle(color: Colors.red[700])),
           ),
           data: (items) => Container(

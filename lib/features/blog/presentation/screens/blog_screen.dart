@@ -38,13 +38,13 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
             children: [
               const Icon(Icons.error, color: Colors.red, size: 60),
               const SizedBox(height: 16),
-              Text('Error loading blogs: $error'),
+              Text('${localization.translate('errorLoadingBlogs')}: $error'),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   ref.read(blogNotifierProvider.notifier).fetchAllBlogPosts();
                 },
-                child: const Text('Retry'),
+                child: Text(localization.translate('retryButton')),
               ),
             ],
           ),
@@ -60,7 +60,7 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'कृषि ब्लॉग',
+                      localization.translate('farmingBlog'),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.green[800],
@@ -68,7 +68,7 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'किसानों के लिए उपयोगी जानकारी',
+                      localization.translate('usefulInfoForFarmers'),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -97,6 +97,7 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
   }
 
   Widget _buildBlogCard(BuildContext context, dynamic post) {
+    final localization = ref.watch(appLocalizationProvider).value!;
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 2,
@@ -180,7 +181,7 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     ),
                     child: Text(
-                      'पढ़ें',
+                      localization.translate('read'),
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         color: Colors.white,
                       ),
@@ -196,6 +197,7 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
   }
 
   void _showBlogDetail(BuildContext context, dynamic post) {
+    final localization = ref.watch(appLocalizationProvider).value!;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -250,7 +252,7 @@ class _BlogScreenState extends ConsumerState<BlogScreen> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'लेखक: ${post.author}',
+                  '${localization.translate('author')}: ${post.author}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.grey[600],
                   ),

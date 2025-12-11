@@ -15,8 +15,6 @@ import 'package:vriddhiapps/features/blog/presentation/screens/blog_screen.dart'
 import 'package:vriddhiapps/features/farm_calculator/presentation/screens/calculator_screen.dart';
 import 'package:vriddhiapps/features/loan_schemes/presentation/screens/loan_schemes_screen.dart';
 import 'package:vriddhiapps/features/disease_detector/presentation/screens/disease_detector_screen.dart';
-import 'package:vriddhiapps/features/auth/presentation/screens/sign_in_screen.dart';
-import 'package:vriddhiapps/features/auth/presentation/screens/sign_up_screen.dart';
 
 Future<void> main() async {
   await Hive.initFlutter();
@@ -37,19 +35,8 @@ class MyApp extends StatelessWidget {
 
   GoRouter _buildRouter() {
     return GoRouter(
-      initialLocation: '/sign-in',
+      initialLocation: '/',
       routes: [
-        // Auth routes (no ShellRoute) - Always show first
-        GoRoute(
-          path: '/sign-in',
-          name: 'sign-in',
-          builder: (context, state) => const SignInScreen(),
-        ),
-        GoRoute(
-          path: '/sign-up',
-          name: 'sign-up',
-          builder: (context, state) => const SignUpScreen(),
-        ),
         // Main app routes with ShellRoute
         ShellRoute(
           builder: (context, state, child) => AppShell(child: child),

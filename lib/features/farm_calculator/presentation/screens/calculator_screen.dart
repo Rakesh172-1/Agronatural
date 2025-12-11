@@ -82,7 +82,7 @@ class _SeedCalculatorState extends ConsumerState<_SeedCalculator> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Select Crop', style: Theme.of(context).textTheme.bodyLarge),
+          Text(widget.localization.translate('selectCropType'), style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 8),
           DropdownButton<String>(
             isExpanded: true,
@@ -116,7 +116,7 @@ class _SeedCalculatorState extends ConsumerState<_SeedCalculator> {
               onPressed: () {
                 ref.read(calculatorNotifierProvider.notifier).calculateSeed(selectedCrop, landSize);
               },
-              child: const Text('Calculate Seed Quantity'),
+              child: Text(widget.localization.translate('calculateSeedQuantity')),
             ),
           ),
           const SizedBox(height: 24),
@@ -268,7 +268,7 @@ class _YieldCalculatorState extends ConsumerState<_YieldCalculator> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Select Crop', style: Theme.of(context).textTheme.bodyLarge),
+          Text(widget.localization.translate('selectCropType'), style: Theme.of(context).textTheme.bodyLarge),
           const SizedBox(height: 8),
           DropdownButton<String>(
             isExpanded: true,
