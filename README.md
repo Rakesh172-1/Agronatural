@@ -5,12 +5,35 @@ A new Flutter project.
 ## Getting Started
 
 This project is a starting point for a Flutter application.
+🎯 Key Features
+✅ Real-time Mandi Prices – Live commodity rates from government APIs
+✅ Smart Weather Alerts – Location-based forecasts + actionable recommendations
+✅ Crop Planning Tool – Season-wise crop suggestions for higher yield
+✅ Fertilizer Calculator – NPK recommendations based on soil & crop type
+✅ Government Schemes – Easy access to subsidies & agricultural programs
+✅ Disease Detector – AI-powered crop disease identification
+✅ Farm Calculator – Area, yield & profit estimation
+✅ Multi-Language Support – English, Hindi, Punjabi
 
-A few resources to get you started if this is your first Flutter project:
+💡 Impact
+Addressing the ₹75,000 crore Indian agritech market, Vriddhi bridges the digital divide by delivering agricultural intelligence in farmers’ native languages.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+🛠 Tech Stack
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Flutter & Dart
+
+Riverpod 2.4.0
+
+Open-Meteo API
+
+Agmarknet API
+
+Hive (offline-first)
+
+Material Design 3
+
+
+🌟 What sets it apart
+Offline-first architecture, farmer-friendly UI, and intelligent condition-based weather notifications designed for rural connectivity challenges.
+
+This project reflects my commitment to using technology for social impact and rural upliftment.
