@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Vriddhi',
+      title: 'Agronatural',
       theme: AppTheme.lightTheme,
       routerConfig: _buildRouter(),
     );
